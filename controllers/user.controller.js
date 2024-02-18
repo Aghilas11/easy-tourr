@@ -1,5 +1,5 @@
 const UserModel = require("../models/user.model");
-const ObjectId = require("mongoose").Types.ObjectId;
+const ObjectID = require("mongoose").Types.ObjectId;
 
 module.exports.getAllUsers = async (req, res) => {
   try {
@@ -12,7 +12,7 @@ module.exports.getAllUsers = async (req, res) => {
 
 module.exports.userInfo = async (req, res) => {
   try {
-    if (!ObjectId.isValid(req.params.id))
+    if (!ObjectID.isValid(req.params.id))
       return res.status(400).send("ID unknown : " + req.params.id);
 
     const user = await UserModel.findById(req.params.id).select("-password");
@@ -29,7 +29,7 @@ module.exports.userInfo = async (req, res) => {
 
 module.exports.updateUser = async (req, res) => {
   try {
-    if (!ObjectId.isValid(req.params.id))
+    if (!ObjectID.isValid(req.params.id))
       return res.status(400).send("ID inconnu : " + req.params.id);
 
     const updatedUser = await UserModel.findOneAndUpdate(
@@ -53,7 +53,7 @@ module.exports.updateUser = async (req, res) => {
 };
 
 module.exports.deleteUser = async (req, res) => {
-  if (!ObjectId.isValid(req.params.id))
+  if (!ObjectID.isValid(req.params.id))
     return res.status(400).send("ID inconnu : " + req.params.id);
 
   try {
