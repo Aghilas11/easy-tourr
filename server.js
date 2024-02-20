@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const userRoutes = require("./routes/user.routes");
 const postRoutes = require("./routes/post.routes");
 const { checkUser, requireAuth } = require("./middleweare/auth.middleweare");
+
 const app = express();
 
 app.use(bodyParser.json());
