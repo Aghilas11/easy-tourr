@@ -68,3 +68,59 @@ module.exports.deleteUser = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
+module.exports.follow = async (req, res) => {
+  if (
+    !ObjectID.isValid(req.params.id) ||
+    !ObjectID.isValid(req.body.idToFollow)
+  )
+    return res.status(400).send("ID inconnu : " + req.params.id);
+
+  try {
+    // add to the follower list
+    const userToUpdate = await UserModel.findByIdAndUpdate(
+      req.params.id,
+      { $addToSet: { following: req.body.idToFollow } },
+      { new: true, upsert: true }
+    );
+
+    // add to following list
+    const userToFollow = await UserModel.findByIdAndUpdate(
+      req.body.idToFollow,
+      { $addToSet: { followers: req.params.id } },
+      { new: true, upsert: true }
+    );
+
+    res.status(201).json({ userToUpdate, userToFollow });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+module.exports.unfollow = async (req, res) => {
+  if (
+    !ObjectID.isValid(req.params.id) ||
+    !ObjectID.isValid(req.body.idToUnfollow)
+  )
+    return res.status(400).send("ID inconnu : " + req.params.id);
+
+  try {
+    // add to the follower list
+    const userToUpdate = await UserModel.findByIdAndUpdate(
+      req.params.id,
+      { $pull: { following: req.body.idToUnfollow } },
+      { new: true, upsert: true }
+    );
+
+    // add to following list
+    const userToUnfollow = await UserModel.findByIdAndUpdate(
+      req.body.idToUnfollow,
+      { $pull: { followers: req.params.id } },
+      { new: true, upsert: true }
+    );
+
+    res.status(201).json({ userToUpdate, userToUnfollow });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
